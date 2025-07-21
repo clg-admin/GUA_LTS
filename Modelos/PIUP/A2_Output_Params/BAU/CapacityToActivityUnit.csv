@@ -1,0 +1,6 @@
+PARAMETER,Scenario,REGION,TECHNOLOGY,FUEL,EMISSION,MODE_OF_OPERATION,YEAR,TIMESLICE,SEASON,DAYTYPE,DAILYTIMEBRACKET,STORAGE,Value
+CapacityToActivityUnit,BAU,GUA,RAW_MAT_CLK,,,,,,,,,,1
+CapacityToActivityUnit,BAU,GUA,RAW_MAT_CEM,,,,,,,,,,1
+CapacityToActivityUnit,BAU,GUA,PROD_CLK_TRAD,,,,,,,,,,1
+CapacityToActivityUnit,BAU,GUA,PROD_CEM,,,,,,,,,,1
+CapacityToActivityUnit,BAU,GUA,T5CEM_PRODCEM_PROD,,,,,,,,,,1

@@ -1,0 +1,542 @@
+---
+title: "Descarbonización Guatemala - NDP"
+author: "AFOLU"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+<style>
+h1, h2 {
+  text-align: left; 
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, eval = TRUE)
+```
+
+```{r, echo=FALSE, message=FALSE}
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(forcats)
+library(gganimate)
+library(DT)
+library(readxl)
+```
+
+```{r, message=FALSE}
+
+data <- read.csv("data_land_NDP_Output.csv")
+
+```
+
+<br />
+<br />
+<br />
+
+## Emisiones
+
+<br />
+<br />
+
+```{r}
+
+
+data %>%
+  filter(Emission != "") %>%
+  filter(Technology == "") %>%
+  plot_ly(x = ~Year, y = ~AnnualEmissions, type = 'scatter', mode = 'none', stackgroup = 'one') %>%
+    layout(title = list(text = "Emisiones netas AFOLU Guatemala 2016-2050"),
+         yaxis = list(title = "Mton CO2e",
+                      ticklen = 5,
+                      tickcolor = "transparent",
+                      # range = c(0,6),
+                      hoverformat = ".2f"), 
+         xaxis = list(title = "Año",
+                      zeroline = FALSE,
+                      hoverformat = ".0f"
+                      ))
+
+```
+
+<br />
+<br />
+<br />
+
+```{r}
+
+hline <- function(y = 0, color = "blue") {
+  list(
+    type = "line", 
+    x0 = 0, 
+    x1 = 1, 
+    xref = "paper",
+    y0 = y, 
+    y1 = y, 
+    line = list(color = color)
+  )
+}
+
+data %>%
+  filter(Emission != "") %>%
+  group_by(Year) %>%
+  filter(Technology != "Latifoleado_adulto",
+         Technology != "Conifero_adulto",
+         Technology != "Manglar_adulto",
+         Technology != "Mixto_adulto",
+         Technology != "Otros_adulto",
+         Technology != "Latifoleado_nuevo",
+         Technology != "Conifero_nuevo",
+         Technology != "Manglar_nuevo",
+         Technology != "Mixto_nuevo",
+         Technology != "plantacion_forestal_latifoleado",
+         Technology != "plantacion_forestal_conifero",
+         Technology != "area_liberada",
+         Technology != "Otros_joven") %>% 
+  summarise(Total = sum(AnnualTechnologyEmission, na.rm = TRUE)) %>%
+  plot_ly(x = ~Year, y = ~Total, type = 'scatter', mode = 'none', stackgroup = 'one') %>%
+    layout(title = list(text = "Emisiones brutas AFOLU Guatemala, 2016-2050"),
+         yaxis = list(title = "Mton CO2e",
+                      ticklen = 5,
+                      tickcolor = "transparent",
+                      #range = c(0,9),
+                      hoverformat = ".2f"), 
+         xaxis = list(title = "Año",
+                      zeroline = FALSE,
+                      hoverformat = ".0f"
+                      )
+         #,shapes = list(hline(30.72+6.43))
+         )
+
+```
+
+<br />
+<br />
+<br />
+
+```{r}
+
+hline <- function(y = 0, color = "blue") {
+  list(
+    type = "line", 
+    x0 = 0, 
+    x1 = 1, 
+    xref = "paper",
+    y0 = y, 
+    y1 = y, 
+    line = list(color = color)
+  )
+}
+
+data %>%
+  filter(Emission != "") %>%
+  group_by(Year) %>%
+  filter(Technology != "Latifoleado_adulto",
+         Technology != "Conifero_adulto",
+         Technology != "Manglar_adulto",
+         Technology != "Mixto_adulto",
+         Technology != "Otros_adulto",
+         Technology != "Latifoleado_nuevo",
+         Technology != "Conifero_nuevo",
+         Technology != "Manglar_nuevo",
+         Technology != "Mixto_nuevo",
+         Technology != "plantacion_forestal_latifoleado",
+         Technology != "plantacion_forestal_conifero",
+         Technology != "Otros_joven",
+         Technology != "deforestacion_latifoleado",
+         Technology != "deforestacion_conifero",
+         Technology != "deforestacion_mixto",
+         Technology != "deforestacion_manglar",
+         Technology != "deforestacion_plantacion_latifoleado",
+         Technology != "deforestacion_plantacion_conifero",
+         Technology != "deforestacion_otros",
+         Technology != "area_incendiada_latifoleado",
+         Technology != "area_incendiada_conifero",
+         Technology != "area_incendiada_mixto",
+         Technology != "area_incendiada_otros",
+         Technology != "area_liberada",
+         Technology != "Lena") %>% 
+  summarise(Total = sum(AnnualTechnologyEmission, na.rm = TRUE)) %>%
+  plot_ly(x = ~Year, y = ~Total, type = 'scatter', mode = 'none', stackgroup = 'one') %>%
+    layout(title = list(text = "Emisiones agropecuarias Guatemala, 2016-2050"),
+         yaxis = list(title = "Mton CO2e",
+                      ticklen = 5,
+                      tickcolor = "transparent",
+                      #range = c(0,9),
+                      hoverformat = ".2f"), 
+         xaxis = list(title = "Año",
+                      zeroline = FALSE,
+                      hoverformat = ".0f"),
+    shapes = list(hline(6.434))
+    )
+
+```
+
+<br />
+<br />
+<br />
+
+```{r}
+data %>%
+  filter(Emission != "") %>%
+  filter(Technology != "") %>% 
+  filter(Technology != "Latifoleado_adulto",
+         Technology != "Conifero_adulto",
+         Technology != "Manglar_adulto",
+         Technology != "Mixto_adulto",
+         Technology != "Otros_adulto",
+         Technology != "Latifoleado_nuevo",
+         Technology != "Conifero_nuevo",
+         Technology != "Manglar_nuevo",
+         Technology != "Mixto_nuevo",
+         Technology != "plantacion_forestal_latifoleado",
+         Technology != "plantacion_forestal_conifero",
+         Technology != "Otros_joven",
+         Technology != "deforestacion_latifoleado",
+         Technology != "deforestacion_conifero",
+         Technology != "deforestacion_mixto",
+         Technology != "deforestacion_manglar",
+         Technology != "deforestacion_plantacion_latifoleado",
+         Technology != "deforestacion_plantacion_conifero",
+         Technology != "deforestacion_otros",
+         Technology != "area_incendiada_latifoleado",
+         Technology != "area_incendiada_conifero",
+         Technology != "area_incendiada_mixto",
+         Technology != "area_incendiada_otros",
+         Technology != "area_liberada",
+         Technology != "Lena") %>% 
+  arrange(desc(Year), desc(AnnualTechnologyEmissionByMode)) %>%
+  mutate(Technology = factor(Technology, 
+                             levels = unique(Technology))) %>%
+  plot_ly(x = ~Year, y = ~`AnnualTechnologyEmissionByMode`, color = ~Technology, type = 'scatter', mode = 'none', stackgroup = 'one') %>%
+    layout(title = list(text = "Emisiones agropecuarias por componente"),
+         yaxis = list(title = "Mton CO2e",
+                      ticklen = 5,
+                      tickcolor = "transparent",
+                      #range = c(0,9),
+                      hoverformat = ".2f"), 
+         xaxis = list(title = "Año",
+                      zeroline = FALSE,
+                      hoverformat = ".0f"
+                      )
+)
+         # shapes = list(hline(6.43))
+```
+
+<br />
+<br />
+<br />
+
+```{r}
+
+hline <- function(y = 0, color = "blue") {
+  list(
+    type = "line", 
+    x0 = 0, 
+    x1 = 1, 
+    xref = "paper",
+    y0 = y, 
+    y1 = y, 
+    line = list(color = color)
+  )
+}
+
+data %>%
+  filter(Emission != "") %>%
+  group_by(Year) %>%
+  filter(Technology == "Latifoleado_adulto" |
+         Technology == "Conifero_adulto" |
+         Technology == "Manglar_adulto" |
+         Technology == "Mixto_adulto" |
+         Technology == "Otros_adulto" |
+         Technology == "Latifoleado_nuevo" |
+         Technology == "Conifero_nuevo" |
+         Technology == "Manglar_nuevo" |
+         Technology == "Mixto_nuevo" |
+         Technology == "plantacion_forestal_latifoleado" |
+         Technology == "plantacion_forestal_conifero" |
+         Technology == "area_liberada" |
+         Technology == "Otros_adulto") %>% 
+  summarise(Total = sum(AnnualTechnologyEmission, na.rm = TRUE)) %>%
+  plot_ly(x = ~Year, y = ~Total, type = 'scatter', mode = 'none', stackgroup = 'one') %>%
+    layout(title = list(text = "Absorción bosques Guatemala, 2016-2050"),
+         yaxis = list(title = "Mton CO2e",
+                      ticklen = 5,
+                      tickcolor = "transparent",
+                      # range = c(0,9),
+                      hoverformat = ".2f"), 
+         xaxis = list(title = "Año",
+                      zeroline = FALSE,
+                      hoverformat = ".0f"),
+    shapes = list(hline(-28.370))
+    )
+
+```
+
+<br />
+<br />
+<br />
+
+```{r}
+data %>%
+  filter(Emission != "") %>%
+  filter(Technology != "") %>% 
+  filter(Technology == "Latifoleado_adulto" |
+         Technology == "Conifero_adulto" |
+         Technology == "Manglar_adulto" |
+         Technology == "Mixto_adulto" |
+         Technology == "Otros_adulto" |
+         Technology == "Latifoleado_nuevo" |
+         Technology == "Conifero_nuevo" |
+         Technology == "Manglar_nuevo" |
+         Technology == "Mixto_nuevo" |
+         Technology == "plantacion_forestal_latifoleado" |
+         Technology == "plantacion_forestal_conifero" |
+         Technology == "area_liberada" |
+         Technology == "Otros_adulto") %>% 
+  arrange(Year, AnnualTechnologyEmissionByMode) %>%
+  mutate(Technology = factor(Technology, 
+                             levels = unique(Technology))) %>%
+  plot_ly(x = ~Year, y = ~`AnnualTechnologyEmissionByMode`, color = ~Technology, type = 'scatter', mode = 'none', stackgroup = 'one') %>%
+    layout(title = list(text = "Absorción bosques por componente, 2016-2050"),
+         yaxis = list(title = "Mton CO2e",
+                      ticklen = 5,
+                      tickcolor = "transparent",
+                      # range = c(-6,1),
+                      hoverformat = ".2f"), 
+         xaxis = list(title = "Año",
+                      zeroline = FALSE,
+                      hoverformat = ".0f"
+                      )
+         #,shapes = list(hline(-28.37))
+         )
+
+```
+
+<br />
+<br />
+<br />
+
+```{r}
+
+hline <- function(y = 0, color = "blue") {
+  list(
+    type = "line", 
+    x0 = 0, 
+    x1 = 1, 
+    xref = "paper",
+    y0 = y, 
+    y1 = y, 
+    line = list(color = color)
+  )
+}
+
+data %>%
+  filter(Emission != "") %>%
+  group_by(Year) %>%
+  filter(Technology == "deforestacion_latifoleado" | 
+         Technology == "deforestacion_conifero" | 
+         Technology == "deforestacion_mixto" | 
+         Technology == "deforestacion_manglar" | 
+         Technology == "deforestacion_plantacion_latifoleado" |
+         Technology == "deforestacion_plantacion_conifero" |
+         Technology == "deforestacion_otros" |
+         Technology == "area_incendiada_latifoleado" |
+         Technology == "area_incendiada_conifero" |
+         Technology == "area_incendiada_mixto" |
+         Technology == "area_incendiada_otros" |
+         Technology == "Lena") %>% 
+  summarise(Total = sum(AnnualTechnologyEmission, na.rm = TRUE)) %>%
+  plot_ly(x = ~Year, y = ~Total, type = 'scatter', mode = 'none', stackgroup = 'one') %>%
+    layout(title = list(text = "Emisiones brutas UTCUTS, 2016-2050"),
+         yaxis = list(title = "Mton CO2e",
+                      ticklen = 5,
+                      tickcolor = "transparent",
+                      # range = c(0,9),
+                      hoverformat = ".2f"), 
+         xaxis = list(title = "Año",
+                      zeroline = FALSE,
+                      hoverformat = ".0f"),
+    shapes = list(hline(30))
+    )
+
+```
+
+<br />
+<br />
+<br />
+
+```{r}
+data %>%
+  filter(Emission != "") %>%
+  filter(Technology != "") %>% 
+  filter(Technology == "deforestacion_latifoleado" | 
+         Technology == "deforestacion_conifero" | 
+         Technology == "deforestacion_mixto" | 
+         Technology == "deforestacion_manglar" | 
+         Technology == "deforestacion_plantacion_latifoleado" |
+         Technology == "deforestacion_plantacion_conifero" |
+         Technology == "deforestacion_otros" |
+         Technology == "area_incendiada_latifoleado" |
+         Technology == "area_incendiada_conifero" |
+         Technology == "area_incendiada_mixto" |
+         Technology == "area_incendiada_otros" |
+         Technology == "Lena") %>% 
+  arrange(desc(Year), desc(AnnualTechnologyEmissionByMode)) %>%
+  mutate(Technology = factor(Technology, 
+                             levels = unique(Technology))) %>%
+  plot_ly(x = ~Year, y = ~`AnnualTechnologyEmissionByMode`, color = ~Technology, type = 'scatter', mode = 'none', stackgroup = 'one') %>%
+    layout(title = list(text = "Emisión deforestación por componente, 2016-2050"),
+         yaxis = list(title = "Mton CO2e",
+                      ticklen = 5,
+                      tickcolor = "transparent",
+                      # range = c(-6,1),
+                      hoverformat = ".6f"), 
+         xaxis = list(title = "Año",
+                      zeroline = FALSE,
+                      hoverformat = ".0f"
+                      ))
+
+```
+
+<br />
+<br />
+<br />
+
+## Coberturas
+
+<br />
+<br />
+
+```{r}
+
+hline <- function(y = 0, color = "blue") {
+  list(
+    type = "line", 
+    x0 = 0, 
+    x1 = 1, 
+    xref = "paper",
+    y0 = y, 
+    y1 = y, 
+    line = list(color = color)
+  )
+}
+
+data %>%
+  filter(TotalAnnualTechnologyActivityByMode != "") %>%
+  filter(Technology %in% c("Bosques", "Cultivos", "Pasto", "Matorrales", "Urbano", "Otras_coberturas")) %>%
+  arrange(Year, desc(TotalAnnualTechnologyActivityByMode)) %>%
+  mutate(Technology = factor(Technology, 
+                             levels = unique(Technology))) %>%
+  plot_ly(x = ~Year, y = ~`TotalAnnualTechnologyActivityByMode`, color = ~Technology, type = 'scatter', mode = 'none', stackgroup = 'one') %>%
+  layout(title = list(text = "Coberturas Guatemala, 2016-2050"),
+         yaxis = list(title = "Mha",
+                      ticklen = 5,
+                      tickcolor = "transparent",
+                      range = c(0,11),
+                      hoverformat = ".2f"), 
+         xaxis = list(title = "Año",
+                      zeroline = FALSE,
+                      hoverformat = ".0f"),
+    shapes = list(hline(10.889))
+    )
+
+
+```
+
+<br />
+<br />
+<br />
+
+## Producción
+
+<br />
+<br />
+
+```{r}
+
+data %>%
+  filter(ProductionByTechnologyAnnual != "") %>%
+  filter(Technology %in% c("Cafe", "Azucar", "Cardamomo", "Banano",
+                           "Hule", "Palma", "Maiz", "Frijol","Bovina",
+                           "Leche")) %>%
+  arrange(Year, desc(ProductionByTechnologyAnnual)) %>%
+  mutate(Technology = factor(Technology, 
+                             levels = unique(Technology))) %>%
+  plot_ly(x = ~Year, y = ~`ProductionByTechnologyAnnual`, color = ~Technology, type = 'scatter', mode = 'none', stackgroup = 'one') %>%
+  layout(title = list(text = "Producción agropecuaria, 2016-2050"),
+         yaxis = list(title = "Mt",
+                      ticklen = 5,
+                      tickcolor = "transparent",
+                      range = c(0,30),
+                      hoverformat = ".2f",
+                      categoryorder='max descending', 
+                      categoryarray=c('Banano', 'Maiz', 'Palma', 'Cafe')), 
+         xaxis = list(title = "Año",
+                      zeroline = FALSE,
+                      hoverformat = ".0f"
+                      ))
+
+```
+
+
+## Costos
+
+<br />
+<br />
+
+```{r}
+
+data %>%
+  filter(Year == 2016) %>%
+  plot_ly(x = ~Year, y = ~DiscountedCapitalInvestment, type = 'bar', name = 'Costo capital') %>%
+  add_trace(y = ~DiscountedOperatingCost, name = 'Costo operacional') %>%
+  layout(barmode = 'stack',
+         title = list(text = "Costo en VP al 2016, 2016-2050 (5 %)"),
+         yaxis = list(title = "M USD",
+                      ticklen = 5,
+                      tickcolor = "transparent",
+                      # range = c(0,30),
+                      hoverformat = ".2f"), 
+         xaxis = list(title = "2016",
+                      zeroline = FALSE,
+                      hoverformat = ".0f",
+                      showticklabels = FALSE
+                      ))
+
+  
+```  
+
+<br />
+<br />
+<br />
+
+```{r}
+
+data %>%
+  filter(Year == 2016) %>%
+  arrange(Year, desc(DiscountedOperatingCost)) %>%
+  mutate(Technology = factor(Technology, 
+                             levels = unique(Technology))) %>%
+  plot_ly(x = ~Year, y = ~DiscountedOperatingCost, color = ~Technology, type = 'bar') %>%
+  layout(barmode = 'stack',
+         title = list(text = "Costo operacional en VP al 2016, 2016-2050 (5 %)"),
+         yaxis = list(title = "M USD",
+                      ticklen = 5,
+                      tickcolor = "transparent",
+                      # range = c(0,30),
+                      hoverformat = ".2f"), 
+         xaxis = list(title = "2016",
+                      zeroline = FALSE,
+                      hoverformat = ".0f",
+                      showticklabels = FALSE
+                      ))
+
+  
+```  
